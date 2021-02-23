@@ -10,6 +10,7 @@ from ops.main import main
 from ops.model import ActiveStatus, MaintenanceStatus
 
 from oci_image import OCIImageResource, OCIImageResourceError
+from provide_interface import ProvideAppInterface
 
 log = logging.getLogger()
 
@@ -34,6 +35,7 @@ def gen_pass() -> str:
 class MinioCharm(CharmBase):
     def __init__(self, *args):
         super().__init__(*args)
+        self.minio_interface = ProvideAppInterface(self, "minio", "minio_schema.yaml")
         self.image = OCIImageResource(self, "oci-image")
         self.framework.observe(self.on.install, self.set_pod_spec)
         self.framework.observe(self.on.upgrade_charm, self.set_pod_spec)
@@ -42,7 +44,7 @@ class MinioCharm(CharmBase):
 
     def send_info(self, event):
         secret_key = get_or_set("password", configured=None, default=gen_pass)
-        event.relation.data[self.model.app].update({
+        self.minio_interface.update_relation_data({
             "service": self.model.app.name,
             "port": self.model.config["port"],
             "access-key": self.model.config["access-key"],

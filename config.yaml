@@ -1,7 +1,7 @@
 options:
   port:
-    type: string
-    default: '9000'
+    type: int
+    default: 9000
     description: HTTP port
   access-key:
     type: string
