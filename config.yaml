@@ -5,9 +5,9 @@ options:
     description: HTTP port
   access-key:
     type: string
-    default: minio
+    default: 'minio'
     description: Access key
   secret-key:
     type: string
-    default: ~
+    default: ''
     description: Secret key

@@ -41,11 +41,13 @@ class MinioCharm(CharmBase):
         self.framework.observe(self.on.minio_relation_joined, self.send_info)
 
     def send_info(self, event):
-        secret_key = get_or_set("password", default=gen_pass)
-        event.relation.data[self.unit]["service"] = self.model.app.name
-        event.relation.data[self.unit]["port"] = self.model.config["port"]
-        event.relation.data[self.unit]["access-key"] = self.model.config["access-key"]
-        event.relation.data[self.unit]["secret-key"] = secret_key
+        secret_key = get_or_set("password", configured=None, default=gen_pass)
+        event.relation.data[self.model.app].update({
+            "service": self.model.app.name,
+            "port": self.model.config["port"],
+            "access-key": self.model.config["access-key"],
+            "secret-key": secret_key,
+        })
 
     def set_pod_spec(self, event):
         if not self.model.unit.is_leader():
