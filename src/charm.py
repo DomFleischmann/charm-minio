@@ -10,7 +10,7 @@ from ops.main import main
 from ops.model import ActiveStatus, MaintenanceStatus
 
 from oci_image import OCIImageResource, OCIImageResourceError
-from provide_interface import ProvideAppInterface
+from charms.minio.v0.minio_interface import MinioProvide
 
 log = logging.getLogger()
 
@@ -35,7 +35,7 @@ def gen_pass() -> str:
 class MinioCharm(CharmBase):
     def __init__(self, *args):
         super().__init__(*args)
-        self.minio_interface = ProvideAppInterface(self, "minio", "minio_schema.yaml")
+        self.minio_interface = MinioProvide(self, "minio")
         self.image = OCIImageResource(self, "oci-image")
         self.framework.observe(self.on.install, self.set_pod_spec)
         self.framework.observe(self.on.upgrade_charm, self.set_pod_spec)
